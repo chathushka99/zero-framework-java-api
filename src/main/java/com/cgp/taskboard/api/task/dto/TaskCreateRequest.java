@@ -1,22 +1,4 @@
 package com.cgp.taskboard.api.task.dto;
 
-public class TaskCreateRequest {
-    private String title;
-    private String description;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-}
+/** Request body for creating a new task. {@code title} is required; {@code description} is optional. */
+public record TaskCreateRequest(String title, String description) {}

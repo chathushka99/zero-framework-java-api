@@ -12,7 +12,20 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+/**
+ * HTTP handler for the {@code /api/v1/tasks} resource.
+ *
+ * <p>Routes:
+ * <ul>
+ *   <li>{@code GET    /api/v1/tasks}      – list all tasks
+ *   <li>{@code POST   /api/v1/tasks}      – create a task
+ *   <li>{@code GET    /api/v1/tasks/{id}} – get a task by id
+ *   <li>{@code PUT    /api/v1/tasks/{id}} – replace a task
+ *   <li>{@code DELETE /api/v1/tasks/{id}} – delete a task
+ * </ul>
+ */
 public class TaskHandler implements HttpHandler {
+
     private static final String BASE_PATH = "/api/v1/tasks";
 
     private final TaskService taskService;
@@ -58,7 +71,7 @@ public class TaskHandler implements HttpHandler {
             case "POST" -> {
                 TaskCreateRequest request = readRequestBody(exchange, TaskCreateRequest.class);
                 Task created = taskService.create(request);
-                exchange.getResponseHeaders().set("Location", BASE_PATH + "/" + created.getId());
+                exchange.getResponseHeaders().set("Location", BASE_PATH + "/" + created.id());
                 sendJson(exchange, 201, created);
             }
             default -> sendJson(exchange, 405, Map.of("error", "Method not allowed"));
@@ -84,7 +97,10 @@ public class TaskHandler implements HttpHandler {
                 TaskUpdateRequest request = readRequestBody(exchange, TaskUpdateRequest.class);
                 sendJson(exchange, 200, taskService.update(id, request));
             }
-            case "DELETE" -> sendNoContent(exchange);
+            case "DELETE" -> {
+                taskService.delete(id);
+                exchange.sendResponseHeaders(204, -1);
+            }
             default -> sendJson(exchange, 405, Map.of("error", "Method not allowed"));
         }
     }
@@ -92,14 +108,6 @@ public class TaskHandler implements HttpHandler {
     private <T> T readRequestBody(HttpExchange exchange, Class<T> type) throws IOException {
         byte[] body = exchange.getRequestBody().readAllBytes();
         return objectMapper.readValue(body, type);
-    }
-
-    private void sendNoContent(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        String idPart = path.substring((BASE_PATH + "/").length());
-        UUID id = UUID.fromString(idPart);
-        taskService.delete(id);
-        exchange.sendResponseHeaders(204, -1);
     }
 
     private void sendJson(HttpExchange exchange, int status, Object payload) throws IOException {
