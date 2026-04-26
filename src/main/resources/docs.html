@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskboard API Docs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; line-height: 1.5; }
+        code, pre { background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; }
+        pre { padding: 0.8rem; overflow-x: auto; }
+    </style>
+</head>
+<body>
+<h1>Taskboard API</h1>
+<p>OpenAPI YAML: <a href="/openapi.yaml">/openapi.yaml</a></p>
+
+<h2>Sample cURL Commands</h2>
+
+<h3>Create</h3>
+<pre><code>curl -X POST "http://localhost:8080/api/v1/tasks" \
+  -H "Content-Type: application/json" \
+  -d "{\"title\":\"Buy groceries\",\"description\":\"Milk, eggs\"}"</code></pre>
+
+<h3>Get all</h3>
+<pre><code>curl "http://localhost:8080/api/v1/tasks"</code></pre>
+
+<h3>Get one</h3>
+<pre><code>curl "http://localhost:8080/api/v1/tasks/{id}"</code></pre>
+
+<h3>Update</h3>
+<pre><code>curl -X PUT "http://localhost:8080/api/v1/tasks/{id}" \
+  -H "Content-Type: application/json" \
+  -d "{\"title\":\"Buy groceries and bread\",\"description\":\"Milk, eggs, bread\",\"completed\":true}"</code></pre>
+
+<h3>Delete</h3>
+<pre><code>curl -X DELETE "http://localhost:8080/api/v1/tasks/{id}"</code></pre>
+</body>
+</html>
